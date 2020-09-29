@@ -6,7 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"golang-journey-api/pkg/database"
+	"github.com/Ngdustry/golang-journey-api/pkg/database"
 )
 
 // Get status

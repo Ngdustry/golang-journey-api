@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"golang-journey-api/pkg/database"
-	"golang-journey-api/pkg/router"
+	"github.com/Ngdustry/golang-journey-api/pkg/database"
+	"github.com/Ngdustry/golang-journey-api/pkg/router"
 )
 
 func main() {
