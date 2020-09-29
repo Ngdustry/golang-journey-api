@@ -1,4 +1,4 @@
-module github.com/Ngdustry/golang-journey-api
+module golang-journey-api
 
 go 1.14
 
