@@ -32,7 +32,7 @@ type Task struct {
 var db *gorm.DB
 
 func New() {
-	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=disable", os.Getenv("DB_HOST"), os.Getenv("DB_USER"), os.Getenv("DB_PW"), os.Getenv("DB_NAME"), os.Getenv("DB_PORT"))
+	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v", os.Getenv("HOST"), os.Getenv("USER"), os.Getenv("PW"), os.Getenv("NAME"), os.Getenv("PORT"))
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("Failed to connect to DB")
