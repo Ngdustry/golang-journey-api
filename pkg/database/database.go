@@ -86,7 +86,7 @@ func UpdateOneTask(r *http.Request) (err error) {
 	json.NewDecoder(r.Body).Decode(&updatedTask)
 	params := mux.Vars(r)
 
-	result := db.Model(&Task{}).Where("id = ?", params["id"]).Update("text", updatedTask.Text)
+	result := db.Model(&Task{}).Where("id = ?", params["id"]).Updates(map[string]interface{}{"text": updatedTask.Text, "status": updatedTask.Status})
 
 	return result.Error
 }
