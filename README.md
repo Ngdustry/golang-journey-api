@@ -1,4 +1,4 @@
-# **Go Back End** [WIP]
+# **Journey API** [WIP]
 
 This directory houses the WIP `Go` back end for the `Journey` project. 
 
