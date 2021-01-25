@@ -91,15 +91,22 @@ func deleteTask(w http.ResponseWriter, r *http.Request) {
 
 // New inits new router with endpoints on port
 func New() *mux.Router {
+	// Route handlers/endpoints
 	r := mux.NewRouter()
 
-	// Route handlers/endpoints
-	r.HandleFunc("/status", getStatus).Methods("GET")
-	r.HandleFunc("/api/tasks", getTasks).Methods("GET")
-	r.HandleFunc("/api/tasks/{id}", getTask).Methods("GET")
-	r.HandleFunc("/api/tasks", createTask).Methods("POST", "OPTIONS")
-	r.HandleFunc("/api/tasks/{id}", updateTask).Methods("PUT", "OPTIONS")
-	r.HandleFunc("/api/tasks/{id}", deleteTask).Methods("DELETE", "OPTIONS")
+	// Base prefix
+	api := r.Host("/api").Subrouter()
+
+	// Health check
+	api.HandleFunc("/status", getStatus).Methods("GET")
+
+	// Tasks
+	tasks := api.Host("/tasks").Subrouter()
+	tasks.HandleFunc("/", getTasks).Methods("GET")
+	tasks.HandleFunc("/{id}", getTask).Methods("GET")
+	tasks.HandleFunc("/", createTask).Methods("POST", "OPTIONS")
+	tasks.HandleFunc("/{id}", updateTask).Methods("PUT", "OPTIONS")
+	tasks.HandleFunc("/{id}", deleteTask).Methods("DELETE", "OPTIONS")
 
 	// CORS middleware
 	r.Use(mux.CORSMethodMiddleware(r))
