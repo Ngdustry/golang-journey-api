@@ -95,18 +95,17 @@ func New() *mux.Router {
 	r := mux.NewRouter()
 
 	// Base prefix
-	api := r.Host("/api").Subrouter()
+	api := r.PathPrefix("/api").Subrouter()
 
 	// Health check
 	api.HandleFunc("/status", getStatus).Methods("GET")
 
 	// Tasks
-	tasks := api.Host("/tasks").Subrouter()
-	tasks.HandleFunc("/", getTasks).Methods("GET")
-	tasks.HandleFunc("/{id}", getTask).Methods("GET")
-	tasks.HandleFunc("/", createTask).Methods("POST", "OPTIONS")
-	tasks.HandleFunc("/{id}", updateTask).Methods("PUT", "OPTIONS")
-	tasks.HandleFunc("/{id}", deleteTask).Methods("DELETE", "OPTIONS")
+	api.HandleFunc("/tasks", getTasks).Methods("GET")
+	api.HandleFunc("/tasks/{id}", getTask).Methods("GET")
+	api.HandleFunc("/tasks", createTask).Methods("POST", "OPTIONS")
+	api.HandleFunc("/tasks/{id}", updateTask).Methods("PUT", "OPTIONS")
+	api.HandleFunc("/tasks/{id}", deleteTask).Methods("DELETE", "OPTIONS")
 
 	// CORS middleware
 	r.Use(mux.CORSMethodMiddleware(r))
