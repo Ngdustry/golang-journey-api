@@ -1,0 +1,14 @@
+FROM golang:1.15-alpine
+
+RUN apk update && apk add curl git
+
+WORKDIR /go/src/github.com/golang-journey-api
+
+COPY . /go/src/github.com/golang-journey-api
+
+RUN GO111MODULE=off go get -u github.com/cosmtrek/air
+RUN go mod download
+
+HEALTHCHECK CMD curl --fail http://localhost:8080/api/status || exit 1
+
+CMD [ "air" ]

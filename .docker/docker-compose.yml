@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  journey-db:
+    container_name: journey-db
+    env_file:
+      - ../.env/db.env
+    image: 'postgres:latest'
+    ports:
+      - '5432:5432'
+  journey-api:
+    container_name: journey-api
+    env_file:
+      - ../.env/api.env
+    build:
+      context: ../.
+      dockerfile: .docker/api/dockerfile
+    volumes:
+      - ../.:/go/src/github.com/golang-journey-api
+    ports:
+      - '8080:8080'
