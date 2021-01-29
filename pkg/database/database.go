@@ -31,6 +31,7 @@ type Task struct {
 
 var db *gorm.DB
 
+// New creates a new database connection.
 func New() {
 	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=5432", os.Getenv("HOST"), os.Getenv("USER"), os.Getenv("PW"), os.Getenv("DBNAME"))
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -45,7 +46,7 @@ func New() {
 	db.AutoMigrate(&User{})
 }
 
-// FindAllTasks will get all tasks
+// FindAllTasks will get all tasks.
 func FindAllTasks() (res []Task) {
 	var tasks []Task
 	db.Find(&tasks)
@@ -53,7 +54,7 @@ func FindAllTasks() (res []Task) {
 	return tasks
 }
 
-// FindOneTask will get specific task
+// FindOneTask will get specific task.
 func FindOneTask(id string) (Task, error) {
 	var task Task
 	var err error
@@ -66,7 +67,7 @@ func FindOneTask(id string) (Task, error) {
 	return task, err
 }
 
-// CreateNewTask will create a new task
+// CreateNewTask will create a new task.
 func CreateNewTask(r *http.Request) (id uuid.UUID, err error) {
 	var task Task
 
@@ -80,7 +81,7 @@ func CreateNewTask(r *http.Request) (id uuid.UUID, err error) {
 	return task.ID, result.Error
 }
 
-// UpdateOneTask will update a specific task by ID
+// UpdateOneTask will update a specific task by ID.
 func UpdateOneTask(r *http.Request) (err error) {
 	var updatedTask Task
 	json.NewDecoder(r.Body).Decode(&updatedTask)
@@ -91,7 +92,7 @@ func UpdateOneTask(r *http.Request) (err error) {
 	return result.Error
 }
 
-//DeleteOneTask will delete a specific task by ID
+//DeleteOneTask will delete a specific task by ID.
 func DeleteOneTask(id string) {
 	db.Where("id = ?", id).Delete(&Task{})
 }

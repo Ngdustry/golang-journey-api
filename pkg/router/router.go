@@ -9,7 +9,7 @@ import (
 	"golang-journey-api/pkg/database"
 )
 
-// Get status
+// getStatus returns API status check.
 func getStatus(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
