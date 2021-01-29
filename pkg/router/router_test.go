@@ -4,24 +4,43 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
+
+	testUtil "golang-journey-api/pkg/utils/testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
+var (
+	env testUtil.TestEnvironment
+)
+
 type statusResponse struct {
-	status string `json:"status"`
+	Status string `json:"status"`
+}
+
+func TestMain(m *testing.M) {
+	env = testUtil.InitTestEnvironment()
+
+	code := m.Run()
+
+	os.Exit(code)
 }
 
 func TestStatus(t *testing.T) {
-	r := New()
+	env.Router.HandleFunc("/status", getStatus).Methods("GET")
+
 	res := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/status", nil)
-	r.ServeHTTP(res, req)
+	req, _ := http.NewRequest("GET", "/api/status", nil)
+	env.Router.ServeHTTP(res, req)
 
 	var result statusResponse
 	json.NewDecoder(res.Body).Decode(&result)
 
+	assert.NotNil(t, result.Status)
 	assert.Equal(t, 200, res.Code)
-	assert.Equal(t, "ok", res.Body.String())
+	assert.Equal(t, "ok", result.Status)
+
+	testUtil.ResetTestRouter(&env)
 }
