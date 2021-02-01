@@ -8,8 +8,9 @@ import (
 // User struct
 type User struct {
 	gorm.Model
-	ID        uuid.UUID `gorm:"primaryKey" json:"id"`
-	FirstName string    `json:"firstName"`
+	ID        string `gorm:"primaryKey" json:"id"`
+	FirstName string `json:"firstName"`
+	Email     string `json:"email"`
 }
 
 // Task struct
@@ -18,5 +19,5 @@ type Task struct {
 	ID     uuid.UUID `gorm:"primaryKey" json:"id"`
 	Text   string    `json:"text"`
 	Status string    `json:"status"`
-	User   User      `gorm:"embedded" json:"user"`
+	UserID string    `json:"userID"`
 }
