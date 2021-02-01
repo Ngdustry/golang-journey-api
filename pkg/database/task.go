@@ -11,9 +11,9 @@ import (
 )
 
 // FindAllTasks will get all tasks.
-func FindAllTasks() (res []Task) {
+func FindAllTasks(userID string) (res []Task) {
 	var tasks []Task
-	db.Find(&tasks)
+	db.Where("user_id = ?", userID).Find(&tasks)
 
 	return tasks
 }
@@ -22,7 +22,7 @@ func FindAllTasks() (res []Task) {
 func FindOneTask(id string) (Task, error) {
 	var task Task
 	var err error
-	result := db.First(&task, id)
+	result := db.Where("id = ?", id).First(&task)
 
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) == true {
 		err = errors.New("No task found")
@@ -57,6 +57,8 @@ func UpdateOneTask(r *http.Request) (err error) {
 }
 
 //DeleteOneTask will delete a specific task by ID.
-func DeleteOneTask(id string) {
-	db.Where("id = ?", id).Delete(&Task{})
+func DeleteOneTask(id string) (err error) {
+	result := db.Where("id = ?", id).Delete(&Task{})
+
+	return result.Error
 }
