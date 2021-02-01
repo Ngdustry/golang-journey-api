@@ -25,6 +25,7 @@ func New() *mux.Router {
 	// Route handlers/endpoints
 	r := mux.NewRouter()
 	tsr := taskSubrouter{}
+	usr := userSubrouter{}
 
 	// Base prefix
 	api := r.PathPrefix("/api").Subrouter()
@@ -38,6 +39,9 @@ func New() *mux.Router {
 	api.HandleFunc("/tasks", tsr.createTask).Methods("POST", "OPTIONS")
 	api.HandleFunc("/tasks/{id}", tsr.updateTask).Methods("PUT", "OPTIONS")
 	api.HandleFunc("/tasks/{id}", tsr.deleteTask).Methods("DELETE", "OPTIONS")
+
+	// Users
+	api.HandleFunc("/users", usr.createUser).Methods("POST", "OPTIONS")
 
 	// CORS middleware
 	r.Use(mux.CORSMethodMiddleware(r))
