@@ -34,14 +34,14 @@ func New() *mux.Router {
 	api.HandleFunc("/status", getStatus).Methods("GET")
 
 	// Tasks
-	api.HandleFunc("/tasks", tsr.getTasks).Methods("GET")
-	api.HandleFunc("/tasks/{id}", tsr.getTask).Methods("GET")
-	api.HandleFunc("/tasks", tsr.createTask).Methods("POST", "OPTIONS")
-	api.HandleFunc("/tasks/{id}", tsr.updateTask).Methods("PUT", "OPTIONS")
-	api.HandleFunc("/tasks/{id}", tsr.deleteTask).Methods("DELETE", "OPTIONS")
+	api.HandleFunc("/tasks", tsr.getTasks).Methods(http.MethodGet, http.MethodOptions)
+	api.HandleFunc("/tasks/{id}", tsr.getTask).Methods(http.MethodGet)
+	api.HandleFunc("/tasks", tsr.createTask).Methods(http.MethodPost, http.MethodOptions)
+	api.HandleFunc("/tasks/update/{id}", tsr.updateTask).Methods(http.MethodPut, http.MethodOptions)
+	api.HandleFunc("/tasks/delete/{id}", tsr.deleteTask).Methods(http.MethodDelete, http.MethodOptions)
 
 	// Users
-	api.HandleFunc("/users", usr.createUser).Methods("POST", "OPTIONS")
+	api.HandleFunc("/users", usr.createUser).Methods(http.MethodPost, http.MethodOptions)
 
 	// CORS middleware
 	r.Use(mux.CORSMethodMiddleware(r))
