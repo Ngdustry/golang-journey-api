@@ -2,44 +2,29 @@ package router
 
 import (
 	"encoding/json"
-	"golang-journey-api/pkg/database"
+	"golang-journey-api/pkg/service"
 	"net/http"
-
-	"github.com/gorilla/mux"
 )
 
 type taskSubrouter struct{}
 
+var ts service.TaskService
+
 func (tsr taskSubrouter) getTasks(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", http.MethodGet)
 	w.Header().Set("Content-Type", "application/json")
-	tasks := database.FindAllTasks()
+
+	tasks := ts.GetTasks(r)
 
 	json.NewEncoder(w).Encode(tasks)
 	return
 }
 
-func (tsr taskSubrouter) getTask(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(r)
-
-	task, err := database.FindOneTask(params["id"])
-
-	if err != nil {
-		http.Error(w, "Bad Request", 400)
-		panic(err)
-	} else {
-		json.NewEncoder(w).Encode(task)
-		return
-	}
-}
-
 func (tsr taskSubrouter) createTask(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", http.MethodPost)
 	w.Header().Set("Content-Type", "application/json")
 
-	id, err := database.CreateNewTask(r)
+	id, err := ts.CreateTask(r)
 
 	if err != nil {
 		w.WriteHeader(422)
@@ -52,10 +37,10 @@ func (tsr taskSubrouter) createTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func (tsr taskSubrouter) updateTask(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", http.MethodPut)
 	w.Header().Set("Content-Type", "application/json")
 
-	err := database.UpdateOneTask(r)
+	err := ts.UpdateTask(r)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -67,12 +52,15 @@ func (tsr taskSubrouter) updateTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func (tsr taskSubrouter) deleteTask(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(r)
+	w.Header().Set("Access-Control-Allow-Methods", http.MethodDelete)
 
-	database.DeleteOneTask(params["id"])
+	err := ts.DeleteTask(r)
 
-	w.WriteHeader(http.StatusOK)
-	return
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		panic(err)
+	} else {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 }
