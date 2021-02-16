@@ -22,5 +22,4 @@ func New() {
 
 	// Migrate schema
 	db.AutoMigrate(&Task{})
-	db.AutoMigrate(&User{})
 }
