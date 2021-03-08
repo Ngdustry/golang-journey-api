@@ -7,15 +7,16 @@ import (
 // FindAllTasks will get all tasks.
 func FindAllTasks(email string) (res []Task) {
 	var tasks []Task
-	db.Where("user = ?", email).Find(&tasks)
+	db.Where(&Task{User: email}).Find(&tasks)
 
 	return tasks
 }
 
 // CreateNewTask will create a new task.
-func CreateNewTask(task Task) (id uuid.UUID, err error) {
+func CreateNewTask(user string, task Task) (id uuid.UUID, err error) {
 	newID := uuid.New()
 	task.ID = newID
+	task.User = user
 
 	result := db.Create(&task)
 
