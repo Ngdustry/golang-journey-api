@@ -2,7 +2,6 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"golang-journey-api/pkg/database"
@@ -13,15 +12,15 @@ import (
 // TaskService serves as the glue between the Task subrouter and database, performing all related operations and data transformation.
 type TaskService struct{}
 
+// GetTasks returns tasks belonging to user's email.
 func (ts TaskService) GetTasks(r *http.Request) []database.Task {
 	email, _ := r.Context().Value("Email").(string)
-	fmt.Println("GetTasks")
-	fmt.Println(email)
 	tasks := database.FindAllTasks(email)
 
 	return tasks
 }
 
+// CreateTasks composes new task linked to user's email.
 func (ts TaskService) CreateTask(r *http.Request) (interface{}, error) {
 	var data database.Task
 	email, _ := r.Context().Value("Email").(string)
@@ -29,11 +28,12 @@ func (ts TaskService) CreateTask(r *http.Request) (interface{}, error) {
 	json.NewDecoder(r.Body).Decode(&data)
 	data.User = email
 
-	id, err := database.CreateNewTask(data)
+	id, err := database.CreateNewTask(email, data)
 
 	return id, err
 }
 
+// UpdateTask edits a single task belonging to user.
 func (ts TaskService) UpdateTask(r *http.Request) error {
 	var updatedTask database.Task
 
@@ -45,6 +45,7 @@ func (ts TaskService) UpdateTask(r *http.Request) error {
 	return err
 }
 
+// DeleteTask destroys a single task belonging to user.
 func (ts TaskService) DeleteTask(r *http.Request) error {
 	params := mux.Vars(r)
 
